@@ -1,7 +1,7 @@
 // variáveis do jogo
-var canvas, ctx, frames = 0;
+var canvas, ctx, frames = 0, animation;
 var ALTURA, LARGURA, manESCALA = 50;
-var fundo, skydriver, man, nuvemModelo, nuvens, intervalNuvens = 30;
+var fundo, skydriver, man, ties, nuvemModelo, nuvens, intervalNuvens = 30;
 var esquerda, direita;
 
 canvas    = document.getElementById('canvas');
@@ -11,8 +11,12 @@ esquerda  = document.getElementById('esquerda');
 man = new Image();
 man.src = "pp.png";
 
-nuvemModelo = new Image();
-nuvemModelo.src = "cloud.svg";
+ties = [1,2,3].map(function(id) {
+  var img = new Image();
+  img.src = "tie" + id + ".png";
+  return img;
+});
+
 
 nuvens = {
   _nuvens: [],
@@ -23,7 +27,8 @@ nuvens = {
       posX: parseInt(LARGURA * Math.random()) - 50,
       posY: ALTURA,
       tamX: _tam,
-      tamY: _tam
+      tamY: _tam,
+      img: ties[parseInt(Math.random() * ties.length)]
     });
 
     this.tempoInsere = intervalNuvens;
@@ -31,7 +36,7 @@ nuvens = {
   desenha: function () {
     for (var i = 0, nuvsLenght = this._nuvens.length; i < nuvsLenght; i++) {
       var nuv = this._nuvens[i];
-      ctx.drawImage(nuvemModelo, nuv.posX, nuv.posY, nuv.tamX, nuv.tamX);
+      ctx.drawImage(nuv.img, nuv.posX, nuv.posY, nuv.tamX, nuv.tamX);
     }
   },
   sobe: function () {
@@ -139,7 +144,7 @@ function cai() {
   atualiza();
   desenha();
 
-  window.requestAnimationFrame(cai);
+  animation = window.requestAnimationFrame(cai);
 }
 
 
@@ -155,8 +160,11 @@ function atualiza() {
 
 // desenha
 function desenha() {
-  ctx.fillStyle = "rgb(87, 143, 214)";
+  ctx.fillStyle = "rgb(215, 254, 255)";
   ctx.fillRect(0, 0, LARGURA, ALTURA);
+  var ceu = new Image();
+  ceu.src = "ceu.jpg";
+  ctx.drawImage(ceu, 0, 0,LARGURA, ALTURA);
 
   nuvens.desenha();
   man.onload = skydriver.desenha();
